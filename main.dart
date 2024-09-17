@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:expressions/expressions.dart'; // Ensure this package is added in pubspec.yaml
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Calculator(),
+      home: const Calculator(),
     );
   }
 }
@@ -45,6 +45,17 @@ class _CalculatorState extends State<Calculator> {
           _display = 'Error';
           _expression = ''; // Clear expression after error
         }
+      } else if (buttonText == '^2') {
+        if (_expression.isNotEmpty) {
+          try {
+            final result = _evaluateExpression(_expression);
+            _expression = '$result^2';
+            _display = _expression;
+          } catch (e) {
+            _display = 'Error';
+            _expression = ''; // Clear expression after error
+          }
+        }
       } else {
         if (_display == 'Error') {
           _expression = buttonText;
@@ -66,7 +77,7 @@ class _CalculatorState extends State<Calculator> {
   double _evaluateExpression(String expression) {
     try {
       // Convert to valid operators
-      expression = expression.replaceAll('x', '*').replaceAll('÷', '/');
+      expression = expression.replaceAll('x', '*').replaceAll('÷', '/').replaceAll('^2', '**2');
 
       // Use the expressions package to evaluate the expression
       final parsedExpression = Expression.parse(expression);
@@ -131,6 +142,11 @@ class _CalculatorState extends State<Calculator> {
                   _buildButton('+'),
                 ],
               ),
+              Row(
+                children: [
+                  _buildButton('^2'), // Add the square button here
+                ],
+              ),
             ],
           ),
         ],
@@ -149,7 +165,7 @@ class _CalculatorState extends State<Calculator> {
             borderRadius: BorderRadius.circular(8), // Rounded corners
           ),
         ),
-        child: Text(text, style: TextStyle(fontSize: 24)),
+        child: Text(text, style: const TextStyle(fontSize: 24)),
       ),
     );
   }
